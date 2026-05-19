@@ -18,6 +18,7 @@ import { PlasticButton } from './components/ui/PlasticButton';
 import { GradientBackground } from './components/ui/paper-design-shader-background';
 import GradientBars from './components/ui/gradient-bars-bg';
 import bg4 from '../bg4.jpeg';
+import logo from './logo.png';
 
 const importing = [
     [0, 2, 4, 6, 20, 34, 48, 46, 44, 42, 28, 14, 8, 22, 36, 38, 40, 26, 12, 10, 16, 30, 24, 18, 32],
@@ -439,7 +440,7 @@ function Navbar({ name, setName, onOpenWaitlist }: { name: string, setName: (nam
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-black/5">
       <div className="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div className="font-semibold tracking-tight text-base">{name || 'Zyfleron'}</div>
+          <img src={logo} alt="Zyfleron" className="h-8 w-auto object-contain" />
           <div className="hidden md:flex items-center gap-5 text-sm text-black/60 font-medium">
           </div>
         </div>
