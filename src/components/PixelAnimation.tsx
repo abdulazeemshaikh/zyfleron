@@ -151,6 +151,7 @@ export function PixelAnimation({
     animationDirection: number
     width: number
     height: number
+    isIntersecting: boolean
   }>({
     pixels: [],
     request: null,
@@ -160,6 +161,7 @@ export function PixelAnimation({
     animationDirection: 1,
     width: 0,
     height: 0,
+    isIntersecting: false,
   })
 
   const getDelay = (x: number, y: number, direction?: boolean) => {
@@ -214,6 +216,11 @@ export function PixelAnimation({
 
     const interval = 1000 / 60
     const animation = animationRef.current
+
+    if (!animation.isIntersecting) {
+      animation.request = null
+      return
+    }
 
     animation.request = requestAnimationFrame(animate)
 
@@ -275,7 +282,9 @@ export function PixelAnimation({
 
     animationRef.current.ticker = 0
 
-    animate()
+    if (animationRef.current.isIntersecting) {
+      animate()
+    }
   }
 
   const handleClick = () => {
@@ -283,10 +292,34 @@ export function PixelAnimation({
   }
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(resize)
     const container = containerRef.current
 
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        animationRef.current.isIntersecting = entry.isIntersecting
+        if (entry.isIntersecting) {
+          if (!animationRef.current.request) {
+            animate()
+          }
+        } else {
+          if (animationRef.current.request) {
+            cancelAnimationFrame(animationRef.current.request)
+            animationRef.current.request = null
+          }
+        }
+      },
+      { threshold: 0.05 }
+    )
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (animationRef.current.isIntersecting) {
+        resize()
+      }
+    })
+
     if (container) {
+      intersectionObserver.observe(container)
       resizeObserver.observe(container)
     }
 
@@ -294,6 +327,7 @@ export function PixelAnimation({
       if (animationRef.current.request) {
         cancelAnimationFrame(animationRef.current.request)
       }
+      intersectionObserver.disconnect()
       resizeObserver.disconnect()
     }
   }, [])
