@@ -440,7 +440,7 @@ function Navbar({ name, setName, onOpenWaitlist }: { name: string, setName: (nam
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-black/5">
       <div className="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <img src={logo} alt="Zyfleron" className="h-8 w-auto object-contain" />
+          <img src={logo} alt="Zyfleron" className="h-6 w-auto object-contain" />
           <div className="hidden md:flex items-center gap-5 text-sm text-black/60 font-medium">
           </div>
         </div>
