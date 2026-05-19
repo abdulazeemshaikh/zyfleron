@@ -503,6 +503,22 @@ function WaitlistModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => vo
           body: JSON.stringify(waitlistData),
         });
       }
+
+      const formspreeUrl = import.meta.env.VITE_FORMSPREE_URL;
+      if (formspreeUrl) {
+        await fetch(formspreeUrl, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formName,
+            contact: formContact,
+            message: `New Zyfleron waitlist signup! Name: ${formName}, Contact: ${formContact}`,
+          }),
+        });
+      }
     } catch (error) {
       console.error('Submission failed:', error);
     }
