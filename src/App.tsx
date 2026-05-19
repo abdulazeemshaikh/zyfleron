@@ -17,6 +17,7 @@ import { DotFlow, DotFlowProps } from "@/components/ui/dot-flow";
 import { PlasticButton } from './components/ui/PlasticButton';
 import { GradientBackground } from './components/ui/paper-design-shader-background';
 import GradientBars from './components/ui/gradient-bars-bg';
+import bg4 from '../bg4.jpeg';
 
 const importing = [
     [0, 2, 4, 6, 20, 34, 48, 46, 44, 42, 28, 14, 8, 22, 36, 38, 40, 26, 12, 10, 16, 30, 24, 18, 32],
@@ -1421,7 +1422,7 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
       btnText: "Explore Solutions",
       isWaitlist: false,
       type: "solutions",
-      backgroundImage: "/bg4.jpeg"
+      backgroundImage: bg4
     },
     {
       title: "Automate Your Team's Daily Tasks With AI in Minutes",
