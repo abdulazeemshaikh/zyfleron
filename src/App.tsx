@@ -469,6 +469,14 @@ function WaitlistModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => vo
   const [formContact, setFormContact] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      setIsSubmitted(false);
+      setFormName('');
+      setFormContact('');
+    }
+  }, [isOpen]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
