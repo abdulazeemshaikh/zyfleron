@@ -34,6 +34,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          VITE_GOOGLE_SHEET_URL: ${{ secrets.VITE_GOOGLE_SHEET_URL || vars.VITE_GOOGLE_SHEET_URL }}
+          VITE_FORMSPREE_URL: ${{ secrets.VITE_FORMSPREE_URL || vars.VITE_FORMSPREE_URL }}
         run: npm run build
 
       - name: Setup Pages
