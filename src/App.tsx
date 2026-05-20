@@ -1438,6 +1438,24 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
   const containerRef = useRef<HTMLDivElement>(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [hoveredSector, setHoveredSector] = useState<number | null>(null);
+  const [scaleFactor, setScaleFactor] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setScaleFactor((window.innerWidth * 0.9) / 1250);
+      } else {
+        setScaleFactor(1);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1538,11 +1556,16 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
           {[...cards, ...cards, ...cards].map((card, i) => (
             <div 
               key={i} 
-              className={`flex-none w-[90vw] md:w-[1250px] h-[calc(90vw*668/1250)] md:h-[668px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
+              className={`flex-none w-[90vw] md:w-[1250px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
+              style={{ height: isMobile ? 668 * scaleFactor : 668 }}
             >
               <div 
-                className="origin-top-left scale-[calc(90vw/1250)] md:scale-100 w-[1250px] h-[668px] absolute top-0 left-0 flex flex-col justify-end"
-                style={card.backgroundImage ? { backgroundImage: `url(${card.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+                className="origin-top-left absolute top-0 left-0 flex flex-col justify-end w-[1250px] h-[668px]"
+                style={{
+                  transform: `scale(${scaleFactor})`,
+                  transformOrigin: 'top left',
+                  ...(card.backgroundImage ? { backgroundImage: `url(${card.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {})
+                }}
               >
                 {card.type === 'ecosystem' && (
                   <PixelAnimation 
