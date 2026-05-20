@@ -392,19 +392,47 @@ function BetaNotification({ onOpenWaitlist }: { onOpenWaitlist: () => void }) {
 function NameInput({ name, setName, children }: { name: string, setName: (name: string) => void, children: ReactNode }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobile]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isVisible) {
+    if (!isMobile && !isVisible) {
       setMousePos({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleTriggerClick = () => {
+    if (isMobile) {
+      setIsVisible(!isVisible);
     }
   };
 
   return (
     <div 
+      ref={containerRef}
       className="relative"
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
+      onMouseEnter={() => !isMobile && setIsVisible(true)}
+      onMouseLeave={() => !isMobile && setIsVisible(false)}
+      onClick={handleTriggerClick}
     >
       {children}
       <AnimatePresence>
@@ -414,11 +442,11 @@ function NameInput({ name, setName, children }: { name: string, setName: (name: 
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed z-[60] pointer-events-none"
-            style={{ 
+            className="absolute md:fixed top-full md:top-auto right-0 md:right-auto mt-2 md:mt-0 z-[60]"
+            style={!isMobile ? { 
               left: mousePos.x + 10, 
               top: mousePos.y + 10 
-            }}
+            } : {}}
           >
             <input 
               autoFocus
@@ -426,6 +454,7 @@ function NameInput({ name, setName, children }: { name: string, setName: (name: 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name..."
+              onClick={(e) => e.stopPropagation()}
               className="w-40 px-3 py-2 rounded-lg bg-white border border-black/10 outline-none text-xs shadow-lg pointer-events-auto"
             />
           </motion.div>
@@ -445,10 +474,11 @@ function Navbar({ name, setName, onOpenWaitlist }: { name: string, setName: (nam
           </div>
         </div>
         <div className="flex items-center gap-4 h-full">
-          <div className="hidden md:block">
+          <div className="flex items-center">
             <NameInput name={name} setName={setName}>
               <div className="px-3 py-1 rounded-none border border-black/10 hover:border-black/20 transition-colors cursor-pointer text-xs font-medium text-black/60 hover:text-black">
-                You can name your companion!
+                <span className="hidden sm:inline">You can name your companion!</span>
+                <span className="sm:hidden">Name companion</span>
               </div>
             </NameInput>
           </div>
@@ -1508,7 +1538,7 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
           {[...cards, ...cards, ...cards].map((card, i) => (
             <div 
               key={i} 
-              className={`flex-none w-[90vw] md:w-[1250px] h-[450px] md:h-[668px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
+              className={`flex-none w-[90vw] md:w-[1250px] h-[260px] md:h-[668px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
               style={card.backgroundImage ? { backgroundImage: `url(${card.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
             >
               {card.type === 'ecosystem' && (
@@ -1524,11 +1554,11 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
                 <GradientBackground />
               )}
               {card.type === 'solutions' && (
-                <div className="flex flex-col gap-4 p-12">
+                <div className="flex flex-col justify-center h-full gap-2 md:gap-4 p-6 md:p-12">
                     {sectors.map((sector, idx) => (
                         <h4 
                           key={idx} 
-                          className="font-bold text-2xl md:text-4xl cursor-pointer transition-colors text-white" 
+                          className="font-bold text-lg md:text-4xl cursor-pointer transition-colors text-white hover:text-white/80" 
                           onClick={onOpenWaitlist}
                           onMouseEnter={() => setHoveredSector(idx)}
                           onMouseMove={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
@@ -1549,19 +1579,19 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
                     )}
                 </div>
               )}
-              <div className={`relative p-10 md:p-14 flex flex-col ${card.type === 'automation' ? 'items-center' : 'items-start'} ${card.isWaitlist ? 'text-white' : 'text-black'} z-20 w-full`}>
+              <div className={`relative p-6 md:p-14 flex flex-col h-full ${card.type === 'automation' ? 'items-center justify-center' : 'items-start justify-end'} ${card.isWaitlist ? 'text-white' : 'text-black'} z-20 w-full`}>
                     {card.type === 'automation' ? (
                       <>
-                        <h3 className="text-4xl md:text-5xl font-bold mb-6 tracking-tighter w-full max-w-2xl text-center">
+                        <h3 className="text-xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tighter w-full max-w-2xl text-center">
                           {card.title}
                         </h3>
-                        <p className="text-lg md:text-xl font-medium text-black/60 max-w-lg mb-8 text-center">
+                        <p className="text-xs md:text-xl font-medium text-black/60 max-w-lg mb-4 md:mb-8 text-center">
                           {card.desc}
                         </p>
                     <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
                     </div>
                     {card.features && (
-                      <div className="grid grid-cols-4 gap-4">
+                      <div className="hidden md:grid grid-cols-4 gap-4">
                         {card.features.map((f, idx) => (
                           <div key={idx} className={`p-6 rounded-none bg-gray-50 border border-gray-100 ${
                             idx === 0 ? "col-start-1" :
@@ -1580,13 +1610,19 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
                         ))}
                       </div>
                     )}
+                    <button 
+                      onClick={onOpenWaitlist}
+                      className="md:hidden px-8 py-2.5 bg-black text-white rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg text-xs"
+                    >
+                      Start For Free
+                    </button>
                   </>
                 ) : (
-                <h3 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter flex items-center gap-3 h-[1.2em] min-w-0">
+                <h3 className="text-xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tighter flex flex-wrap items-center gap-2 md:gap-3 min-h-[1.2em] min-w-0">
                   {card.type === 'new-ai' ? (
                     <>
                       <span>{card.title}</span>
-                      <span className={`relative flex-1 min-w-0 overflow-hidden h-[1.2em] min-w-[280px] md:min-w-[380px] ${card.isWaitlist ? 'text-white' : 'text-black'} translate-y-[4px]`}>
+                      <span className={`relative flex-1 min-w-0 overflow-hidden h-[1.2em] min-w-[150px] md:min-w-[380px] ${card.isWaitlist ? 'text-white' : 'text-black'} translate-y-[2px] md:translate-y-[4px]`}>
                         <AnimatePresence mode="popLayout">
                           <motion.span
                             key={roleIndex}
@@ -1607,15 +1643,15 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
                 </h3>
                 )}
                 {card.type !== 'automation' && card.type !== 'solutions' && (
-                  <div className="flex flex-wrap items-center gap-6 w-full">
+                  <div className="flex flex-wrap items-center gap-4 md:gap-6 w-full">
                     <button 
                       onClick={onOpenWaitlist}
-                      className={`px-10 py-3.5 ${card.isWaitlist ? 'bg-white text-black' : 'bg-black text-white'} rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg`}
+                      className={`px-6 py-2 md:px-10 md:py-3.5 text-xs md:text-base ${card.isWaitlist ? 'bg-white text-black' : 'bg-black text-white'} rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg`}
                     >
                       {card.btnText}
                     </button>
                     {card.desc && card.type !== 'solutions' && (
-                      <p className={`text-base md:text-lg font-medium ${card.isWaitlist ? 'text-white/60' : 'text-black/60'} max-w-2xl text-left`}>
+                      <p className={`text-xs md:text-lg font-medium ${card.isWaitlist ? 'text-white/60' : 'text-black/60'} max-w-2xl text-left`}>
                         {card.genre && (
                            <span className={`${card.isWaitlist ? 'text-white' : 'text-black'} font-bold`}>{card.genre} • </span>
                         )}
