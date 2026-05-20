@@ -1538,128 +1538,126 @@ function EntertainmentShowcase({ name, onOpenWaitlist }: { name: string, onOpenW
           {[...cards, ...cards, ...cards].map((card, i) => (
             <div 
               key={i} 
-              className={`flex-none w-[90vw] md:w-[1250px] h-[260px] md:h-[668px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
-              style={card.backgroundImage ? { backgroundImage: `url(${card.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+              className={`flex-none w-[90vw] md:w-[1250px] h-[calc(90vw*668/1250)] md:h-[668px] relative overflow-hidden group border border-black/5 flex flex-col justify-end ${card.color || 'bg-white'} shadow-sm snap-center`}
             >
-              {card.type === 'ecosystem' && (
-                <PixelAnimation 
-                  backgroundColor="transparent" 
-                  pixelGap={12} 
-                  maxPixelSize={6} 
-                  animationSpeed={0.5} 
-                  colorHueRange={100}
-                />
-              )}
-              {card.type === 'new-ai' && (
-                <GradientBackground />
-              )}
-              {card.type === 'solutions' && (
-                <div className="flex flex-col justify-center h-full gap-2 md:gap-4 p-6 md:p-12">
-                    {sectors.map((sector, idx) => (
-                        <h4 
-                          key={idx} 
-                          className="font-bold text-lg md:text-4xl cursor-pointer transition-colors text-white hover:text-white/80" 
-                          onClick={onOpenWaitlist}
-                          onMouseEnter={() => setHoveredSector(idx)}
-                          onMouseMove={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
-                          onMouseLeave={() => setHoveredSector(null)}
-                        >
-                            {sector.title}
-                        </h4>
-                    ))}
-                    {hoveredSector !== null && (
-                        <div
-                          className="fixed z-[999] pointer-events-none p-4 bg-white border border-black/10 shadow-xl rounded-lg max-w-[200px]"
-                          style={{ left: cursorPos.x + 15, top: cursorPos.y + 15 }}
-                        >
-                            <h4 className="font-bold text-sm mb-1">{sectors[hoveredSector].title}</h4>
-                            <p className="text-xs text-black/40 mb-1">{sectors[hoveredSector].genre}</p>
-                            <p className="text-xs text-black/60 leading-relaxed">{sectors[hoveredSector].desc}</p>
-                        </div>
-                    )}
-                </div>
-              )}
-              <div className={`relative p-6 md:p-14 flex flex-col h-full ${card.type === 'automation' ? 'items-center justify-center' : 'items-start justify-end'} ${card.isWaitlist ? 'text-white' : 'text-black'} z-20 w-full`}>
-                    {card.type === 'automation' ? (
-                      <>
-                        <h3 className="text-xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tighter w-full max-w-2xl text-center">
-                          {card.title}
-                        </h3>
-                        <p className="text-xs md:text-xl font-medium text-black/60 max-w-lg mb-4 md:mb-8 text-center">
-                          {card.desc}
-                        </p>
-                    <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-                    </div>
-                    {card.features && (
-                      <div className="hidden md:grid grid-cols-4 gap-4">
-                        {card.features.map((f, idx) => (
-                          <div key={idx} className={`p-6 rounded-none bg-gray-50 border border-gray-100 ${
-                            idx === 0 ? "col-start-1" :
-                            idx === 1 ? "col-start-3" :
-                            idx === 2 ? "col-start-2" :
-                            idx === 3 ? "col-start-4" : ""
-                          }`}>
-                            <div className="flex flex-col gap-2">
-                             <div className="flex items-center gap-3">
-                                <div className="text-gray-900">{f.icon}</div>
-                                <h4 className="font-bold tracking-tight">{f.title}</h4>
-                             </div>
-                             <p className="text-sm text-gray-500">{f.desc}</p>
-                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <button 
-                      onClick={onOpenWaitlist}
-                      className="md:hidden px-8 py-2.5 bg-black text-white rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg text-xs"
-                    >
-                      Start For Free
-                    </button>
-                  </>
-                ) : (
-                <h3 className="text-xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tighter flex flex-wrap items-center gap-2 md:gap-3 min-h-[1.2em] min-w-0">
-                  {card.type === 'new-ai' ? (
-                    <>
-                      <span>{card.title}</span>
-                      <span className={`relative flex-1 min-w-0 overflow-hidden h-[1.2em] min-w-[150px] md:min-w-[380px] ${card.isWaitlist ? 'text-white' : 'text-black'} translate-y-[2px] md:translate-y-[4px]`}>
-                        <AnimatePresence mode="popLayout">
-                          <motion.span
-                            key={roleIndex}
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -40 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                            className="absolute left-0"
-                          >
-                            {roles[roleIndex]}
-                          </motion.span>
-                        </AnimatePresence>
-                      </span>
-                    </>
-                  ) : (
-                    card.title
-                  )}
-                </h3>
+              <div 
+                className="origin-top-left scale-[calc(90vw/1250)] md:scale-100 w-[1250px] h-[668px] absolute top-0 left-0 flex flex-col justify-end"
+                style={card.backgroundImage ? { backgroundImage: `url(${card.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+              >
+                {card.type === 'ecosystem' && (
+                  <PixelAnimation 
+                    backgroundColor="transparent" 
+                    pixelGap={12} 
+                    maxPixelSize={6} 
+                    animationSpeed={0.5} 
+                    colorHueRange={100}
+                  />
                 )}
-                {card.type !== 'automation' && card.type !== 'solutions' && (
-                  <div className="flex flex-wrap items-center gap-4 md:gap-6 w-full">
-                    <button 
-                      onClick={onOpenWaitlist}
-                      className={`px-6 py-2 md:px-10 md:py-3.5 text-xs md:text-base ${card.isWaitlist ? 'bg-white text-black' : 'bg-black text-white'} rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg`}
-                    >
-                      {card.btnText}
-                    </button>
-                    {card.desc && card.type !== 'solutions' && (
-                      <p className={`text-xs md:text-lg font-medium ${card.isWaitlist ? 'text-white/60' : 'text-black/60'} max-w-2xl text-left`}>
-                        {card.genre && (
-                           <span className={`${card.isWaitlist ? 'text-white' : 'text-black'} font-bold`}>{card.genre} • </span>
-                        )}
-                        {card.desc}
-                      </p>
-                    )}
+                {card.type === 'new-ai' && (
+                  <GradientBackground />
+                )}
+                {card.type === 'solutions' && (
+                  <div className="flex flex-col gap-4 p-12">
+                      {sectors.map((sector, idx) => (
+                          <h4 
+                            key={idx} 
+                            className="font-bold text-2xl md:text-4xl cursor-pointer transition-colors text-white hover:text-white/80" 
+                            onClick={onOpenWaitlist}
+                            onMouseEnter={() => setHoveredSector(idx)}
+                            onMouseMove={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
+                            onMouseLeave={() => setHoveredSector(null)}
+                          >
+                              {sector.title}
+                          </h4>
+                      ))}
+                      {hoveredSector !== null && (
+                          <div
+                            className="fixed z-[999] pointer-events-none p-4 bg-white border border-black/10 shadow-xl rounded-lg max-w-[200px]"
+                            style={{ left: cursorPos.x + 15, top: cursorPos.y + 15 }}
+                          >
+                              <h4 className="font-bold text-sm mb-1">{sectors[hoveredSector].title}</h4>
+                              <p className="text-xs text-black/40 mb-1">{sectors[hoveredSector].genre}</p>
+                              <p className="text-xs text-black/60 leading-relaxed">{sectors[hoveredSector].desc}</p>
+                          </div>
+                      )}
                   </div>
                 )}
+                <div className={`relative p-10 md:p-14 flex flex-col ${card.type === 'automation' ? 'items-center' : 'items-start'} ${card.isWaitlist ? 'text-white' : 'text-black'} z-20 w-full`}>
+                      {card.type === 'automation' ? (
+                        <>
+                          <h3 className="text-4xl md:text-5xl font-bold mb-6 tracking-tighter w-full max-w-2xl text-center">
+                            {card.title}
+                          </h3>
+                          <p className="text-lg md:text-xl font-medium text-black/60 max-w-lg mb-8 text-center">
+                            {card.desc}
+                          </p>
+                      <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+                      </div>
+                      {card.features && (
+                        <div className="grid grid-cols-4 gap-4">
+                          {card.features.map((f, idx) => (
+                            <div key={idx} className={`p-6 rounded-none bg-gray-50 border border-gray-100 ${
+                              idx === 0 ? "col-start-1" :
+                              idx === 1 ? "col-start-3" :
+                              idx === 2 ? "col-start-2" :
+                              idx === 3 ? "col-start-4" : ""
+                            }`}>
+                              <div className="flex flex-col gap-2">
+                               <div className="flex items-center gap-3">
+                                  <div className="text-gray-900">{f.icon}</div>
+                                  <h4 className="font-bold tracking-tight">{f.title}</h4>
+                               </div>
+                               <p className="text-sm text-gray-500">{f.desc}</p>
+                               </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                  <h3 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter flex items-center gap-3 h-[1.2em] min-w-0">
+                    {card.type === 'new-ai' ? (
+                      <>
+                        <span>{card.title}</span>
+                        <span className={`relative flex-1 min-w-0 overflow-hidden h-[1.2em] min-w-[280px] md:min-w-[380px] ${card.isWaitlist ? 'text-white' : 'text-black'} translate-y-[4px]`}>
+                          <AnimatePresence mode="popLayout">
+                            <motion.span
+                              key={roleIndex}
+                              initial={{ opacity: 0, y: 40 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -40 }}
+                              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                              className="absolute left-0"
+                            >
+                              {roles[roleIndex]}
+                            </motion.span>
+                          </AnimatePresence>
+                        </span>
+                      </>
+                    ) : (
+                      card.title
+                    )}
+                  </h3>
+                  )}
+                  {card.type !== 'automation' && card.type !== 'solutions' && (
+                    <div className="flex flex-wrap items-center gap-6 w-full">
+                      <button 
+                        onClick={onOpenWaitlist}
+                        className={`px-10 py-3.5 ${card.isWaitlist ? 'bg-white text-black' : 'bg-black text-white'} rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg`}
+                      >
+                        {card.btnText}
+                      </button>
+                      {card.desc && card.type !== 'solutions' && (
+                        <p className={`text-base md:text-lg font-medium ${card.isWaitlist ? 'text-white/60' : 'text-black/60'} max-w-2xl text-left`}>
+                          {card.genre && (
+                             <span className={`${card.isWaitlist ? 'text-white' : 'text-black'} font-bold`}>{card.genre} • </span>
+                          )}
+                          {card.desc}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
