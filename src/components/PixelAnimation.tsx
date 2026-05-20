@@ -271,12 +271,14 @@ export function PixelAnimation({
     }
 
     const rect = container.getBoundingClientRect()
+    const width = container.offsetWidth || Math.floor(rect.width)
+    const height = container.offsetHeight || Math.floor(rect.height)
 
-    animationRef.current.width = Math.floor(rect.width)
-    animationRef.current.height = Math.floor(rect.height)
+    animationRef.current.width = width
+    animationRef.current.height = height
 
-    canvas.width = animationRef.current.width
-    canvas.height = animationRef.current.height
+    canvas.width = width
+    canvas.height = height
 
     initPixels()
 
@@ -361,7 +363,7 @@ export function PixelAnimation({
           height: containerHeight,
         }}
       >
-        <canvas ref={canvasRef} />
+        <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
       </div>
       {showHint && (
         <div className="text-xl font-semibold">
